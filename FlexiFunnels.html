@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cost Comparison Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-6">💰 SaaS Cost Comparison Calculator</h1>
+
+    <!-- Revenue Slider -->
+    <div class="mb-6">
+      <label for="revenue" class="block font-semibold mb-2">Projected Annual Revenue: ₹<span id="revenueDisplay">10,00,000</span></label>
+      <input type="range" id="revenue" min="100000" max="5000000" step="50000" value="1000000" class="w-full">
+    </div>
+
+    <!-- Competitor Inputs -->
+    <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block font-semibold mb-1">Competitor Tool Name</label>
+        <input type="text" id="toolName" placeholder="e.g., XYZ Funnels" class="w-full p-2 border rounded">
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Yearly Subscription (₹)</label>
+        <input type="number" id="competitorFixed" placeholder="e.g., 20000" class="w-full p-2 border rounded">
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Transaction Fee (%)</label>
+        <input type="number" id="competitorFee" placeholder="e.g., 5" class="w-full p-2 border rounded">
+      </div>
+    </div>
+
+    <!-- Result Box -->
+    <div id="result" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- FlexiFunnels -->
+      <div class="bg-green-100 p-4 rounded-xl shadow">
+        <h2 class="text-xl font-bold text-green-700 mb-2">🟩 FlexiFunnels</h2>
+        <p>Fixed Cost: ₹34,999</p>
+        <p>Transaction Fee: 1%</p>
+        <p class="mt-2 font-semibold text-lg">Total Cost: ₹<span id="flexiCost">44,999</span></p>
+      </div>
+      <!-- Competitor -->
+      <div class="bg-yellow-100 p-4 rounded-xl shadow">
+        <h2 class="text-xl font-bold text-yellow-700 mb-2">🟨 <span id="toolNameDisplay">Competitor</span></h2>
+        <p id="compDetails">Fixed: ₹20,000 + Fee: 5%</p>
+        <p class="mt-2 font-semibold text-lg">Total Cost: ₹<span id="competitorCost">70,000</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const revenueInput = document.getElementById("revenue");
+    const revenueDisplay = document.getElementById("revenueDisplay");
+    const toolNameInput = document.getElementById("toolName");
+    const competitorFixedInput = document.getElementById("competitorFixed");
+    const competitorFeeInput = document.getElementById("competitorFee");
+
+    function formatINR(value) {
+      return new Intl.NumberFormat('en-IN').format(value);
+    }
+
+    function updateCosts() {
+      const revenue = parseInt(revenueInput.value);
+      revenueDisplay.textContent = formatINR(revenue);
+
+      // FlexiFunnels Calculation
+      const flexiFixed = 34999;
+      const flexiCost = flexiFixed + (0.01 * revenue);
+      document.getElementById("flexiCost").textContent = formatINR(flexiCost);
+
+      // Competitor Calculation
+      const toolName = toolNameInput.value || "Competitor";
+      const compFixed = parseInt(competitorFixedInput.value) || 0;
+      const compFee = parseFloat(competitorFeeInput.value) || 0;
+      const compTotal = compFixed + (compFee / 100 * revenue);
+
+      document.getElementById("toolNameDisplay").textContent = toolName;
+      document.getElementById("compDetails").textContent = `Fixed: ₹${formatINR(compFixed)} + Fee: ${compFee}%`;
+      document.getElementById("competitorCost").textContent = formatINR(compTotal);
+    }
+
+    revenueInput.addEventListener("input", updateCosts);
+    toolNameInput.addEventListener("input", updateCosts);
+    competitorFixedInput.addEventListener("input", updateCosts);
+    competitorFeeInput.addEventListener("input", updateCosts);
+
+    // Initial load
+    updateCosts();
+  </script>
+</body>
+</html>
